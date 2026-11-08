@@ -77,9 +77,39 @@ function addRathTrail(group) {
 let scene, camera, renderer, rathGroup;
     let lanternsGroup = [];
     let clock = new THREE.Clock();
+    let hasShownHint = false;
+    let signatureShown = false;
+
+    function showOrientationHint() {
+      const hint = document.getElementById('orientation-hint');
+      if (!hint || hasShownHint) return;
+
+      hasShownHint = true;
+      hint.classList.add('visible');
+
+      setTimeout(() => {
+        hint.classList.add('fade-out');
+      }, 1500);
+    }
+
+    function showSignatureText() {
+      const signature = document.getElementById('signature-text');
+      if (!signature || signatureShown) return;
+
+      signatureShown = true;
+      signature.style.display = 'block';
+      signature.classList.add('visible');
+    }
 
     async function initExperience() {
+      const hint = document.getElementById('orientation-hint');
+      if (hint) {
+        hint.classList.add('fade-out');
+        hint.style.opacity = '0';
+      }
+
       document.getElementById('start-btn').style.display = 'none';
+      showOrientationHint();
 
       // 1. Initialize Live Video Background
       try {
@@ -216,16 +246,23 @@ let scene, camera, renderer, rathGroup;
       requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // Animate Rath
       if (rathGroup) {
         const isPortrait = window.innerHeight >= window.innerWidth;
         const introProgress = Math.min(elapsedTime / 14, 1);
 
-        const targetX = isPortrait ? 0 : 0;
-        const targetY = isPortrait ? -1.4 : -2.0;
+        rathGroup.position.x = -13 + introProgress * 13;
+        rathGroup.position.y = (isPortrait ? -1.4 : -2.0) + Math.sin(elapsedTime * 0.2) * (isPortrait ? 0.15 : 0.22);
 
-        rathGroup.position.x = -13 + introProgress * 13 + (isPortrait ? 0 : 0.8);
-        rathGroup.position.y = targetY + Math.sin(elapsedTime * 0.2) * (isPortrait ? 0.15 : 0.22);
+        if (introProgress >= 0.08) {
+          const hint = document.getElementById('orientation-hint');
+          if (hint && !hint.classList.contains('fade-out')) {
+            hint.classList.add('fade-out');
+          }
+        }
+
+        if (introProgress >= 0.98) {
+          showSignatureText();
+        }
       }
 
       // Animate Lanterns (Floating up + Shimmering Opacity/Scale)

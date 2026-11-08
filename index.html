@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Diwali WebAR - Shriram Rath & Floating Lanterns</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Cursive:wght@400;700&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body, html { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Segoe UI', sans-serif; }
     
@@ -40,6 +42,7 @@
     .header-text {
       color: #ffd700;
       text-shadow: 0 0 12px rgba(255, 215, 0, 0.8), 0 0 24px rgba(255, 140, 0, 0.6);
+      font-family: 'Comic Relief', 'Segoe UI', sans-serif;
       font-size: clamp(1.1rem, 2.6vw, 1.8rem);
       font-weight: 700;
       letter-spacing: 1px;
@@ -47,14 +50,6 @@
       margin-top: clamp(12px, 2vh, 22px);
       max-width: min(90vw, 520px);
       line-height: 1.2;
-    }
-
-    .header-text .subtitle {
-      display: block;
-      font-size: clamp(0.72rem, 1.8vw, 0.95rem);
-      font-weight: 400;
-      color: #fff;
-      margin-top: 6px;
     }
 
     .start-btn {
@@ -69,6 +64,57 @@
       box-shadow: 0 0 20px rgba(255, 140, 0, 0.8);
       cursor: pointer;
       margin-bottom: clamp(16px, 3vh, 28px);
+      font-family: 'Comic Relief', 'Segoe UI', sans-serif;
+    }
+
+    #orientation-hint,
+    #signature-text {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 4;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    #orientation-hint {
+      top: 18%;
+      width: min(88vw, 560px);
+      padding: 10px 16px;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      color: #fff3bf;
+      font-size: clamp(0.75rem, 1.8vw, 1rem);
+      font-weight: 600;
+      line-height: 1.4;
+      backdrop-filter: blur(2px);
+      opacity: 1;
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+
+    #orientation-hint.fade-out {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-8px);
+    }
+
+    #orientation-hint.visible,
+    #signature-text.visible {
+      opacity: 1;
+    }
+
+    #signature-text {
+      bottom: 11vh;
+      width: min(90vw, 520px);
+      color: #ffd700;
+      font-size: clamp(0.9rem, 2vw, 1.15rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 12px rgba(255, 210, 70, 0.7);
+      display: none;
+      font-family: 'Edu NSW ACT Cursive', cursive;
     }
 
     @media (orientation: landscape) and (max-height: 500px) {
@@ -84,6 +130,14 @@
       .start-btn {
         margin-bottom: 10px;
       }
+
+      #orientation-hint {
+        top: 12%;
+      }
+
+      #signature-text {
+        bottom: 8vh;
+      }
     }
   </style>
   
@@ -96,9 +150,12 @@
   <canvas id="ar-canvas"></canvas>
 
   <div id="ui-container">
-    <div class="header-text">🪔 Shubh Diwali 🪔<br><span style="font-size:0.9rem; font-weight:400; color:#fff;">Point your camera towards the balcony/sky</span></div>
+    <div class="header-text">🪔 Shubh Diwali 🪔<br></div>
     <button class="start-btn" id="start-btn" onclick="initExperience()">Tap to Experience Arrival</button>
   </div>
+
+  <div id="orientation-hint">For the best experience, briefly turn your phone to landscape, point it at an empty wall, and enjoy the arrival.</div>
+  <div id="signature-text">From Namrata, Ashutosh and Ananya</div>
 
   <script src="index.js"></script>
 </body>
