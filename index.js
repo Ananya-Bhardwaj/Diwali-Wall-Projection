@@ -127,7 +127,7 @@ let scene, camera, renderer, rathGroup;
 
       const planeGeometry = new THREE.PlaneGeometry(8, 4);
       const rathMesh = new THREE.Mesh(planeGeometry, material);
-      rathMesh.scale.set(3.5  , 3.5, 3.5);
+      rathMesh.scale.set(3.2, 3.2, 3.2);
       rathGroup.add(rathMesh);
 
       const rathUrl = new URL('./rath.png', window.location.href).href;
@@ -152,11 +152,11 @@ let scene, camera, renderer, rathGroup;
         }
       );
 
-    //   addDivineAura(rathGroup);
-    //   addRathBanners(rathGroup);
-    //   addRathTrail(rathGroup);
+      const isPortrait = window.innerHeight >= window.innerWidth;
+      const baseY = isPortrait ? -1.4 : -2.0;
+      const baseX = isPortrait ? 0 : 0;
 
-      rathGroup.position.set(0, -1.2, -6);
+      rathGroup.position.set(baseX, baseY, -6);
       scene.add(rathGroup);
     }
 
@@ -218,15 +218,20 @@ let scene, camera, renderer, rathGroup;
 
       // Animate Rath
       if (rathGroup) {
-        const introProgress = Math.min(elapsedTime / 12, 1);
-        rathGroup.position.x = -13 + introProgress * 13;
-        rathGroup.position.y = -1.2 + Math.sin(elapsedTime * 0.25) * 0.2;
+        const isPortrait = window.innerHeight >= window.innerWidth;
+        const introProgress = Math.min(elapsedTime / 14, 1);
+
+        const targetX = isPortrait ? 0 : 0;
+        const targetY = isPortrait ? -1.4 : -2.0;
+
+        rathGroup.position.x = -13 + introProgress * 13 + (isPortrait ? 0 : 0.8);
+        rathGroup.position.y = targetY + Math.sin(elapsedTime * 0.2) * (isPortrait ? 0.15 : 0.22);
       }
 
       // Animate Lanterns (Floating up + Shimmering Opacity/Scale)
       lanternsGroup.forEach((lantern) => {
         // Float upward
-        lantern.position.y += lantern.userData.speedY * 0.4;
+        lantern.position.y += lantern.userData.speedY * 0.38;
 
         // Reset position if it floats off the top of the screen
         if (lantern.position.y > 8) {
@@ -235,8 +240,8 @@ let scene, camera, renderer, rathGroup;
         }
 
         // Shimmer effect: pulsing opacity and subtle scale wobble
-        const shimmer = Math.sin(elapsedTime * lantern.userData.shimmerSpeed * 0.5 + lantern.userData.offset);
-        lantern.material.opacity = lantern.userData.baseOpacity * (0.6 + 0.4 * shimmer);
+        const shimmer = Math.sin(elapsedTime * lantern.userData.shimmerSpeed * 0.45 + lantern.userData.offset);
+        lantern.material.opacity = lantern.userData.baseOpacity * (0.62 + 0.38 * shimmer);
       });
 
       renderer.render(scene, camera);
@@ -246,4 +251,9 @@ let scene, camera, renderer, rathGroup;
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+
+      if (rathGroup) {
+        const isPortrait = window.innerHeight >= window.innerWidth;
+        rathGroup.position.y = isPortrait ? -1.4 : -2.0;
+      }
     }
